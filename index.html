@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style type="text/css">
+body{
+background:black;
+color:white;
+}
+input{
+background:lime;
+width:300px;
+height:50px;
+font-size:20px;
+}
+label{
+width:80px;
+height:40px;
+}
+#edit{
+display:block;
+}
+#show{
+display:none;
+}
+#new{
+font-size:100px;
+}
+button{
+height:50px;
+width:120px;
+font-size:30px;
+background:lime;
+}
+.txt{
+font-size:20px;
+}
+</style>
+<title></title>
+</head>
+<body>
+<h1><center>Timer</center></h1>
+<div id="edit" ><center>
+<input type="number"  id="hr" placeholder="Enter hours" >
+<br>
+<input type="number" id="min" placeholder="Enter minutes">
+<br>
+<input type="number" id="se" placeholder="Enter seconds" >
+<br><br><button onclick="show()">Start</button></center>
+</div>
+<div id="show" >
+<center>
+<h1 id="stat"> </h1>
+<button onclick="stop()">Stop</button>&nbsp;&nbsp;&nbsp;&nbsp;<button onclick="resume()">Resume </button>
+<br><br><div id="new" ><span id="hours">00</span>:<span id="minutes">00</span>:<span id="seconds">00</span></div>
+</center>
+</div>
+<script type="text/javascript">
+function dis(id){
+document.getElementById(id).style.display = "block";
+}
+function hide(id){
+document.getElementById(id).style.display = "none";
+}
+function modify(id,txt){
+document.getElementById(id).innerText=txt;
+}
+function get(id){
+return document.getElementById(id).value;
+}
+function show()
+{
+seconds = (Number(get('hr'))*3600)+(Number(get('min'))*60)+Number(get('se'));
+hide('edit');
+dis('show');
+modify('stat','Status:Running');
+t = setInterval(decrease,1000);
+}
+function processTime()
+{
+let hours,minutes,second,r;
+hours = Math.floor(seconds/(3600));
+r = seconds%3600;
+minutes = Math.floor(r/60);
+second = r%60;
+var a =[];
+a[0]=hours;
+a[1]=minutes;
+a[2]= second
+return a;
+}
+function stop()
+{
+stopped = true;
+modify('stat','Status:Stopped');
+clearTimeout(t);
+}
+function resume()
+{
+if(stopped)
+{
+stopped = false;
+modify('stat','Status:Running');
+ t = setInterval(decrease,1000);
+ }
+}
+var stopped = false;
+var seconds,t;
+decrease =()=>{
+if(seconds==0){clearTimeout(t);alert('timeover');document.location.reload()}
+let x =processTime();
+modify('hours',x[0]);
+modify('minutes',x[1]);
+modify('seconds',x[2]);
+seconds--;
+}
+
+</script>
+</body>
+</html>
