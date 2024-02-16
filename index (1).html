@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>Flappy milan</title>
+  <style>
+    body {
+    font-size: 15pt;
+}
+canvas{
+  background-color:#10C8B6;
+}
+span{
+  float: left;
+}
+    
+  </style>
+  <!-- HTML -->
+  
+
+</head>
+
+<body>
+  <div id="score" style="color:black">
+  </div>
+<canvas width="400" height="600" id="main">
+
+
+</canvas>
+<button id="playagain" style ="display:none" onclick="window.location.reload()">Play Again</button>
+  <script>
+    let lost=false;
+//let a=new Image();
+//a.src="a.jpg";
+let canvas =document.getElementById('main');
+let score=0;
+let highscore=localStorage.getItem('highscore');
+document.getElementById("score").innerText = 'score : ' + (score + " High score:" + highscore );
+
+let pipe={
+  width:60
+};
+let ctx=canvas.getContext('2d');
+player={x:50,y:250};
+let enemies=new Array();
+function makeenemy(){
+let a=  (Math.floor(Math.random()*200));
+let enemy={
+  x:380,
+  y:a+100,
+  up:true
+};
+enemies.push(enemy);
+
+enemy={
+  x:380,
+  y:a,
+  up:false
+}
+
+enemies.push(enemy);
+}
+document.addEventListener("touchstart",()=>{
+  player.y-=70;
+});
+function collision(){
+  for (let i = 0; i < enemies.length; i++) {
+    const enemyCar = enemies[i];
+  
+    if (
+     ( player.y < (enemyCar.up?0:600-enemyCar.y) + enemyCar.y &&
+      player.y + 50 > (enemyCar.up?0:600-enemyCar.y) &&
+      player.x < enemyCar.x + pipe.width &&
+      player.x + 50 > enemyCar.x
+   )||(
+     player.y<=0||player.y+50>=600
+     )) {
+      return true;
+    }
+  }
+  
+  return false;
+  }
+function update() {
+  
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  
+  for (let i=0;i<enemies.length;i++) {
+    
+    ctx.fillStyle='green';
+    ctx.fillRect(enemies[i].x,(enemies[i].up?0:600-enemies[i].y), pipe.width,enemies[i].y);
+    enemies[i].x-=5;
+    if(enemies[i].x+pipe.width<0){
+    enemies.splice(i,1);
+    score=score+0.5;
+    document.getElementById("score").innerText='score : '+(score+" High score: "+highscore);
+    }
+   
+  
+  
+  }
+    ctx.fillStyle='yellow';
+  //ctx.drawImage(a,player.x,player.y,50,50);
+  ctx.fillRect(player.x,player.y,50,50)
+  player.y+=3;
+  if (collision()) {
+    ctx.font="20px Arial";
+    ctx.fillStyle='red';
+    ctx.fillText("GAME OVER",150,250);
+    lost = true;
+  
+  }
+if(!lost){
+  requestAnimationFrame(update);
+}
+else{
+  if(localStorage.getItem('highscore')<score){
+  localStorage.setItem('highscore',score);}
+  document.getElementById("playagain").style.display="block";}
+}
+setInterval(()=>{makeenemy()},500)
+update();
+
+  </script>
+</body>
+</html>
