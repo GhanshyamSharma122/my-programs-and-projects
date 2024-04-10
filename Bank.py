@@ -22,7 +22,7 @@ def create():
 	'loan':0
 	}
 	dat.append(s)
-	print("account successfully created\nyour account no is ",)
+	print("account successfully created\nyour account no is ",acc)
 	a=open('a.dat','w')
 	a.write(json.dumps(dat))
 def loan(acc,pin):
